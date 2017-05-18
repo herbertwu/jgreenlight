@@ -1,0 +1,18 @@
+rootProject.name = 'jgreenlight'
+
+def String[] modules = [
+        'db',
+        'report',
+        'core',
+	'rest',
+	'services',
+	'commands'
+]
+
+include modules
+
+modules.each {name ->
+	def p = findProject(":${name}")
+	p.name = "jgreenlight-${name}"
+	p.buildFileName = "${name}.gradle"
+}

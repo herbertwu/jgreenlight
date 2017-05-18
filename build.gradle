@@ -1,0 +1,19 @@
+apply plugin: 'base'
+
+description = 'Java plugin testing framework'
+
+allprojects {
+	apply plugin: 'idea'
+	apply plugin: 'eclipse'
+
+	ext.releaseBuild = version.endsWith('RELEASE')
+	ext.snapshotBuild = version.endsWith('SNAPSHOT')
+	ext.springVersion = '4.3.5.RELEASE'
+	ext.springLdapVersion = '2.2.0.RELEASE'
+
+	group = 'com.jgreenlight'
+
+	repositories {
+	mavenCentral()
+	}
+}
