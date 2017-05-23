@@ -1,4 +1,4 @@
-package com.jgreenlight.core.base;
+package com.jgreenlight.core.script;
 
 public class TestCase {
 	private Integer id;
