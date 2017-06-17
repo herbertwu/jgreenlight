@@ -8,11 +8,11 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jgreenlight.core.script.def.ExecutableStep;
+import com.jgreenlight.core.script.def.RunnableStep;
 import com.jgreenlight.core.script.def.LiteralAndVariableValueResolver;
 import com.jgreenlight.core.script.def.ParameterValuesResolver;
 import com.jgreenlight.core.script.def.ReferenceValue;
-import com.jgreenlight.core.script.def.ScriptRun;
+import com.jgreenlight.core.script.def.RunnableScript;
 import com.jgreenlight.core.script.def.ScriptRunContext;
 import com.jgreenlight.core.script.def.ScriptRunException;
 import com.jgreenlight.core.script.def.ScriptRunInfo;
@@ -28,8 +28,8 @@ import com.jgreenlight.core.script.def.StepStatus;
  * Executable step flow-control(if-else, loop) is implemented by pre-run and post-run handler.
  * 
  */
-public class SimpleScriptRunImpl implements ScriptRun {
-	private final Logger log =  LoggerFactory.getLogger(SimpleScriptRunImpl.class);
+public class RunnableScriptImpl implements RunnableScript {
+	private final Logger log =  LoggerFactory.getLogger(RunnableScriptImpl.class);
 	
 	private String id;
 	private String name;
@@ -39,7 +39,7 @@ public class SimpleScriptRunImpl implements ScriptRun {
 	private boolean hasOutput;
 	private Object output;
 	private ReferenceValue outputReference;
-	private List<ExecutableStep> executableSteps;
+	private List<RunnableStep> executableSteps;
 	private Map<String, ReferenceValue> inputParams;
 	private ParameterValuesResolver resolver;
 	private int currentStepNum = 0;
@@ -47,13 +47,13 @@ public class SimpleScriptRunImpl implements ScriptRun {
 	
 	private ScriptRuntime execRuntime; //Maybe a collection if script is repeatable
 
-	public SimpleScriptRunImpl(
+	public RunnableScriptImpl(
 			String id, 
 			String name, 
 			ScriptRunContext executableContext, 
 			boolean hasOutput, 
 			ReferenceValue outputReference,
-			List<ExecutableStep> executableSteps, 
+			List<RunnableStep> executableSteps, 
 			Map<String, ReferenceValue> inputParams,
 			ParameterValuesResolver resolver) {
 		this.id = id;
@@ -78,7 +78,7 @@ public class SimpleScriptRunImpl implements ScriptRun {
 			preRunCheckup();
 			//Execute all steps
 			while (currentStepNum < executableSteps.size()) {
-				ExecutableStep currentStep = executableSteps.get(currentStepNum);
+				RunnableStep currentStep = executableSteps.get(currentStepNum);
 				StepResult stepRunInfo = currentStep.run();
 				printStepRuntime(currentStep.getStepRuntime());
 				if (stepRunInfo.getStatus()==StepStatus.COMPLETED) {

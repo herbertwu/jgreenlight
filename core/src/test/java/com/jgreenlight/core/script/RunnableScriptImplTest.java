@@ -12,9 +12,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.jgreenlight.core.script.def.Command;
-import com.jgreenlight.core.script.def.CommandRunInfo;
-import com.jgreenlight.core.script.def.ExecutableStep;
+import com.jgreenlight.core.script.def.StepAction;
+import com.jgreenlight.core.script.def.StepActionRunInfo;
+import com.jgreenlight.core.script.def.RunnableStep;
 import com.jgreenlight.core.script.def.ParameterValuesResolver;
 import com.jgreenlight.core.script.def.ReferenceType;
 import com.jgreenlight.core.script.def.ReferenceValue;
@@ -22,7 +22,7 @@ import com.jgreenlight.core.script.def.ScriptRunContext;
 import com.jgreenlight.core.script.def.ScriptRunInfo;
 import com.jgreenlight.core.script.def.ScriptRunStatus;
 
-public class SimpleScriptRunImplTest {
+public class RunnableScriptImplTest {
 	String echoValue="Hello";
 	
 	ScriptRunContext execContext = new ScriptRunContext();
@@ -35,9 +35,9 @@ public class SimpleScriptRunImplTest {
 	
 	String echoParamName="message";
 	String actionName="Echo";
-	Command echoCommand = new EchoCommand();
+	StepAction echoCommand = new EchoCommand();
 	
-	Command errCommand = new ErrorCommand();
+	StepAction errCommand = new ErrorCommand();
 	
 	String step1OutVarName="out1";
 	Map<String, ReferenceValue> step1InputParams = stubStep1InputParams();
@@ -50,12 +50,12 @@ public class SimpleScriptRunImplTest {
 	Map<String, ReferenceValue> step3InputParams = new HashMap<String, ReferenceValue>();
 	
 	ReferenceValue scriptOutputReference = new ReferenceValue(ReferenceType.VAR, "out2");
-	List<ExecutableStep> executableSteps = Arrays.asList(step1(),step2());
-	List<ExecutableStep> executableStepWithFailure = Arrays.asList(step1(),step3());
+	List<RunnableStep> executableSteps = Arrays.asList(step1(),step2());
+	List<RunnableStep> executableStepWithFailure = Arrays.asList(step1(),step3());
 	Map<String, ReferenceValue> inputParams = stubScriptInputParams();
 	
 	
-	SimpleScriptRunImpl twoEchosExecutable = new SimpleScriptRunImpl(id, scriptName, execContext, true, scriptOutputReference, executableSteps, inputParams, paramValuesResolver);
+	RunnableScriptImpl twoEchosExecutable = new RunnableScriptImpl(id, scriptName, execContext, true, scriptOutputReference, executableSteps, inputParams, paramValuesResolver);
 	
 	@Test
 	public void runExecutableOfTwoEchoesWithOutputToScriptOutput_ok() {
@@ -69,7 +69,7 @@ public class SimpleScriptRunImplTest {
 	
 	@Test
 	public void runExecutable_actionFailed() {
-		SimpleScriptRunImpl errResultExecutable = new SimpleScriptRunImpl(id, scriptName, execContext, true, scriptOutputReference, executableStepWithFailure, inputParams, paramValuesResolver);
+		RunnableScriptImpl errResultExecutable = new RunnableScriptImpl(id, scriptName, execContext, true, scriptOutputReference, executableStepWithFailure, inputParams, paramValuesResolver);
 		ScriptRunInfo execInfo = errResultExecutable.start();
 		assertThat(ScriptRunStatus.FAILED, is(execInfo.getStatus()));
 		assertThat(id, is(execInfo.getId()));
@@ -81,17 +81,17 @@ public class SimpleScriptRunImplTest {
 	
 	
 	
-	private ExecutableStep step1() {
-		return new ExecutableStep(execContext, actionName, true,  step1OutVarName, step1InputParams, paramValuesResolver, echoCommand);
+	private RunnableStep step1() {
+		return new RunnableStep(execContext, actionName, true,  step1OutVarName, step1InputParams, paramValuesResolver, echoCommand);
 	}
 	
-	private ExecutableStep step2() {
-		return new ExecutableStep(execContext, actionName, true,  step2OutVarName, step2InputParams, paramValuesResolver, echoCommand);
+	private RunnableStep step2() {
+		return new RunnableStep(execContext, actionName, true,  step2OutVarName, step2InputParams, paramValuesResolver, echoCommand);
 		
 	}
 	
-	private ExecutableStep step3() {
-		return new ExecutableStep(execContext, "errAction", true,  step3OutVarName, step3InputParams, paramValuesResolver, errCommand);
+	private RunnableStep step3() {
+		return new RunnableStep(execContext, "errAction", true,  step3OutVarName, step3InputParams, paramValuesResolver, errCommand);
 		
 	}
 	private Map<String, ReferenceValue> stubScriptInputParams() {
@@ -112,19 +112,19 @@ public class SimpleScriptRunImplTest {
 		};
 	}
 	
-	private static class EchoCommand implements Command {
+	private static class EchoCommand implements StepAction {
 		private static final String ECHO_PARAM = "message";
 		@Override
-		public CommandRunInfo run(String name, Map<String, Object> params) {
-			return new CommandRunInfo(0, "ok", true, params.get(ECHO_PARAM));
+		public StepActionRunInfo run(String name, Map<String, Object> params) {
+			return new StepActionRunInfo(0, "ok", true, params.get(ECHO_PARAM));
 		}
 	}
 	
-	private static class ErrorCommand implements Command {
+	private static class ErrorCommand implements StepAction {
 		private static final String Err_Msgs = "404 not found";
 		@Override
-		public CommandRunInfo run(String name, Map<String, Object> params) {
-			return new CommandRunInfo(1, Err_Msgs, true, null);
+		public StepActionRunInfo run(String name, Map<String, Object> params) {
+			return new StepActionRunInfo(1, Err_Msgs, true, null);
 		}
 	}
 

@@ -1,8 +1,26 @@
 package com.jgreenlight.core.script.def;
 
-public interface ScriptRun {
-	String getId();
-	ScriptRunInfo start() throws ScriptRunException;
-    ScriptRunInfo getInfo();
-    void stop() throws ScriptRunException;
+public class ScriptRun {
+	private Long id;
+	private RunnableScript rootRunnable;
+	private long createTime;
+	
+	public ScriptRun(Long id, RunnableScript rootRunnable) {
+		this.id = id;
+		this.rootRunnable = rootRunnable;
+		this.createTime=System.currentTimeMillis();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public long getCreateTime() {
+		return createTime;
+	}
+	
+	public ScriptRunInfo getScriptRunInfo() {
+		return rootRunnable.getInfo();
+	}
+
 }

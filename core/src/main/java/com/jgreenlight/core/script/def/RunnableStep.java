@@ -3,12 +3,12 @@ package com.jgreenlight.core.script.def;
 import java.time.Instant;
 import java.util.Map;
 
-public class ExecutableStep {
-	private ScriptRunContext executableContext;
+public class RunnableStep {
+	private ScriptRunContext runnableContext;
 	private String name;
 	private Map<String, ReferenceValue> stepParams;
 	private ParameterValuesResolver resolver;
-	private Command command;
+	private StepAction command;
 	private StepRunHandler preRunHandler;
 	private StepRunHandler postRunHandler;
 	
@@ -18,8 +18,8 @@ public class ExecutableStep {
 	
 	private StepRuntime stepRuntime; //Maybe a collection if step is repeatable
 	
-	public ExecutableStep(ScriptRunContext executableContext, String name, boolean hasOutput, String outputVarName, Map<String, ReferenceValue> stepParams,ParameterValuesResolver resolver, Command command) {
-		this.executableContext = executableContext;
+	public RunnableStep(ScriptRunContext executableContext, String name, boolean hasOutput, String outputVarName, Map<String, ReferenceValue> stepParams,ParameterValuesResolver resolver, StepAction command) {
+		this.runnableContext = executableContext;
 		this.name = name;
 		this.stepParams = stepParams;
 		this.resolver = resolver;
@@ -34,7 +34,7 @@ public class ExecutableStep {
 			start();
 			//TODO run preRunhandler if any, such as skip
 			Map<String, Object> resolvedParamValues = resolveStepParameters();
-			CommandRunInfo commRunInfo = command.run(name, resolvedParamValues);
+			StepActionRunInfo commRunInfo = command.run(name, resolvedParamValues);
 			saveOutputIfAny(commRunInfo);
 			//TODO run postRunHandler if any, such as step repeat
 			StepResult result = createStepRunInfo(commRunInfo);
@@ -63,11 +63,11 @@ public class ExecutableStep {
 		return resolvedParamValues;
 	}
 
-	private void saveOutputIfAny(CommandRunInfo commRunInfo) {
+	private void saveOutputIfAny(StepActionRunInfo commRunInfo) {
 		if (hasOutput) {
 			this.output = commRunInfo.getOutput();
 			if (outputVarName != null ) {
-				executableContext.addVar(outputVarName, this.output);
+				runnableContext.addVar(outputVarName, this.output);
 			}
 			//log output
 			this.stepRuntime.setOutput(this.output);
@@ -87,7 +87,7 @@ public class ExecutableStep {
 	}
 
 
-	private StepResult createStepRunInfo(CommandRunInfo commRunInfo) {
+	private StepResult createStepRunInfo(StepActionRunInfo commRunInfo) {
 		if (commRunInfo.getCode() == 0) {
 			return new StepResult(StepStatus.COMPLETED, commRunInfo.getMessage(),commRunInfo.isHasOutput(),commRunInfo.getOutput());
 		} else {
@@ -96,7 +96,7 @@ public class ExecutableStep {
 	}
 
 	public ScriptRunContext getExecutableContext() {
-		return executableContext;
+		return runnableContext;
 	}
 
 	public Object getOutput() {

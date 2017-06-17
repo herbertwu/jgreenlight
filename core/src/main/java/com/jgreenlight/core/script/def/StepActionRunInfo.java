@@ -1,12 +1,12 @@
 package com.jgreenlight.core.script.def;
 
-public class CommandRunInfo {
+public class StepActionRunInfo {
 	private int code;
 	private String message;
 	private boolean hasOutput;
 	private Object output;
 	
-	public CommandRunInfo(int code, String message, boolean hasOutput, Object output) {
+	public StepActionRunInfo(int code, String message, boolean hasOutput, Object output) {
 		this.code = code;
 		this.message = message;
 		this.hasOutput = hasOutput;

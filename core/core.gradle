@@ -30,9 +30,11 @@ subprojects {
 	apply plugin: "jacoco"
 }
 dependencies {
+    compile project(':jgreenlight-commands')
     compile "org.springframework:spring-context:4.3.7.RELEASE"
     compile "org.springframework:spring-core:4.3.7.RELEASE"
     compile "org.springframework:spring-beans:4.3.7.RELEASE"
+    compile "commons-io:commons-io:2.5"
     compile "org.slf4j:log4j-over-slf4j:1.7.24"
 	// Use JUnit test framework
     testCompile 'junit:junit:4.12'
