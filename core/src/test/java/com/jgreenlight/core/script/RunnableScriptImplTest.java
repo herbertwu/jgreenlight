@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.jgreenlight.core.script.def.StepAction;
+import com.jgreenlight.core.script.def.StepActionRunner;
 import com.jgreenlight.core.script.def.StepActionRunInfo;
 import com.jgreenlight.core.script.def.RunnableStep;
 import com.jgreenlight.core.script.def.ParameterValuesResolver;
@@ -35,9 +35,9 @@ public class RunnableScriptImplTest {
 	
 	String echoParamName="message";
 	String actionName="Echo";
-	StepAction echoCommand = new EchoCommand();
+	StepActionRunner echoCommand = new EchoCommand();
 	
-	StepAction errCommand = new ErrorCommand();
+	StepActionRunner errCommand = new ErrorCommand();
 	
 	String step1OutVarName="out1";
 	Map<String, ReferenceValue> step1InputParams = stubStep1InputParams();
@@ -112,7 +112,7 @@ public class RunnableScriptImplTest {
 		};
 	}
 	
-	private static class EchoCommand implements StepAction {
+	private static class EchoCommand implements StepActionRunner {
 		private static final String ECHO_PARAM = "message";
 		@Override
 		public StepActionRunInfo run(String name, Map<String, Object> params) {
@@ -120,7 +120,7 @@ public class RunnableScriptImplTest {
 		}
 	}
 	
-	private static class ErrorCommand implements StepAction {
+	private static class ErrorCommand implements StepActionRunner {
 		private static final String Err_Msgs = "404 not found";
 		@Override
 		public StepActionRunInfo run(String name, Map<String, Object> params) {

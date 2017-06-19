@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 import com.jgreenlight.commands.Command;
 import com.jgreenlight.commands.CommandExecutor;
 import com.jgreenlight.commands.CommandRunResult;
-import com.jgreenlight.core.script.def.StepAction;
+import com.jgreenlight.core.script.def.StepActionRunner;
 import com.jgreenlight.core.script.def.StepActionRunInfo;
 
 
 @Component
-public class AtomicStepAction implements StepAction {
+public class StepActionRunnerImpl implements StepActionRunner {
 	private static final int COMMAND_EXEC_ERR = 1;
 	
 	@Autowired

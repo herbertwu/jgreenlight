@@ -97,7 +97,7 @@ public class ScriptExecutor {
 
 
 	private RunnableScript createAndSaveExecutable(ScriptSource request) {
-		RunnableScript executableScript = executableBuilder.create(request);
+		RunnableScript executableScript = executableBuilder.build(request);
 		runnableScriptRepo.addExecutable(executableScript);
 		log.info("Executable created: execId="+executableScript.getId());
 		return executableScript;

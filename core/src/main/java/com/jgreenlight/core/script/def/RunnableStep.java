@@ -8,7 +8,7 @@ public class RunnableStep {
 	private String name;
 	private Map<String, ReferenceValue> stepParams;
 	private ParameterValuesResolver resolver;
-	private StepAction command;
+	private StepActionRunner stepActionRunner;
 	private StepRunHandler preRunHandler;
 	private StepRunHandler postRunHandler;
 	
@@ -18,12 +18,12 @@ public class RunnableStep {
 	
 	private StepRuntime stepRuntime; //Maybe a collection if step is repeatable
 	
-	public RunnableStep(ScriptRunContext executableContext, String name, boolean hasOutput, String outputVarName, Map<String, ReferenceValue> stepParams,ParameterValuesResolver resolver, StepAction command) {
+	public RunnableStep(ScriptRunContext executableContext, String name, boolean hasOutput, String outputVarName, Map<String, ReferenceValue> stepParams,ParameterValuesResolver resolver, StepActionRunner command) {
 		this.runnableContext = executableContext;
 		this.name = name;
 		this.stepParams = stepParams;
 		this.resolver = resolver;
-		this.command = command;
+		this.stepActionRunner = command;
 		
 		this.hasOutput = hasOutput;
 		this.outputVarName = outputVarName;
@@ -34,7 +34,7 @@ public class RunnableStep {
 			start();
 			//TODO run preRunhandler if any, such as skip
 			Map<String, Object> resolvedParamValues = resolveStepParameters();
-			StepActionRunInfo commRunInfo = command.run(name, resolvedParamValues);
+			StepActionRunInfo commRunInfo = stepActionRunner.run(name, resolvedParamValues);
 			saveOutputIfAny(commRunInfo);
 			//TODO run postRunHandler if any, such as step repeat
 			StepResult result = createStepRunInfo(commRunInfo);
